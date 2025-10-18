@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,7 +30,7 @@ import com.example.farmersweatheradvisor.data.WeatherUiState
 @Composable
 fun WeatherScreen(modifier: Modifier = Modifier){
     var city by remember { mutableStateOf("") }
-    val weatherViewModel: WeatherViewModel = viewModel()
+    val weatherViewModel: WeatherViewModel = viewModel(factory = WeatherViewModelFactory())
     val uiState by weatherViewModel.uiState.collectAsStateWithLifecycle()
 
     Column(verticalArrangement = Arrangement.Top,
@@ -59,8 +61,40 @@ fun WeatherScreen(modifier: Modifier = Modifier){
                 }
                 is WeatherUiState.Success -> {
                     val data = uiState as WeatherUiState.Success
-                    Text("City: ${data.cityName}")
-                    Text("Temperature: ${"%.2f".format(data.temperature)}°C")
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "City: ${data.cityName}",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        Text(
+                            text = "Temperature: ${"%.1f".format(data.temperature)}°C",
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+
+                        Text(
+                            text = "Farming Advice:",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF4CAF50),
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        Text(
+                            text = data.advice,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            color = Color.DarkGray
+                        )
+                    }
                 }
                 is WeatherUiState.Error -> {
                     val error = uiState as WeatherUiState.Error

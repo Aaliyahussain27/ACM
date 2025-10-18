@@ -2,6 +2,7 @@ package com.example.farmersweatheradvisor.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.farmersweatheradvisor.BuildConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ class WeatherViewModel(
         _uiState.value = WeatherUiState.Loading
         viewModelScope.launch {
             try {
-                val response = api.getWeather(city, "OPENWEATHER_API_KEY")
+                val response = api.getWeather(city, BuildConfig.OPENWEATHER_API_KEY)
                 val tempInCelsius = response.main.temp - 273.15
                 val humidity = response.main.humidity               // in %
                 val windSpeed = response.wind?.speed                // in m/s
